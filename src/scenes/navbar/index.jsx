@@ -72,6 +72,7 @@ const Navbar = () => {
             <InputBase
               placeholder="Search..."
               onChange={(e) => setQuery(e.target.value)}
+              value={query}
             />
             <IconButton>
               <Search />

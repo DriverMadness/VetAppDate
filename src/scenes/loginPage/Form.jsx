@@ -188,7 +188,12 @@ const Form = () => {
                   onLoad={(autocomplete) => {
                     autocompleteRef.current = autocomplete;
                   }}
-                  onPlaceChanged={onPlaceChanged}
+                  onPlaceChanged={() => {
+                    const { formatted_address } =
+                      autocompleteRef.current.getPlace();
+                    // set form values using the formatted address
+                    setFieldValue("location", formatted_address);
+                  }}
                   options={{ fields: ["formatted_address", "geometry"] }}
                   apiKey={apiKey}
                 >
