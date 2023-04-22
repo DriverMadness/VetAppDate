@@ -9,41 +9,77 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import {
   Search,
   Message,
   DarkMode,
   LightMode,
-  Notifications,
   Help,
   Menu,
   Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "state";
+import { setMode, setLogout } from "../../state";
 import { useNavigate } from "react-router-dom";
-import FlexBetween from "components/FlexBetween";
+import FlexBetween from "../../components/FlexBetween";
+import { setUsers } from "../../state";
+import UserImage from "../../components/UserImage";
+import { useEffect } from "react";
 
-const Navbar = () => {
+const Navbar = ({ picturePath }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
   const background = theme.palette.background.default;
-  const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
-
-  /*const fullName = "Test User";*/
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isSearchDisabled, setIsSearchDisabled] = useState(true);
+  const token = useSelector((state) => state.token);
+  const URL = useSelector((state) => state.URL);
+  const users = useSelector((state) => state.users);
 
   const fullName = `${user.firstName} ${user.lastName}`;
 
-  const [query, setQuery] = useState("");
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    const [newFirstName, newLastName] = value.split(" ");
+    setFirstName(newFirstName);
+    setLastName(newLastName);
+    setIsSearchDisabled(value.trim() === '');
+    if (value === "") {
+      dispatch(setUsers({ users: [] }));
+    }
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    let searchUrl = `${URL}/users/search?firstName=${firstName}&lastName=${lastName}`;
+    let response = await fetch(searchUrl, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    let data = await response.json();
+
+    if (data.length === 0 && lastName !== "") {
+      searchUrl = `${URL}/users/search?firstName=${lastName}&lastName=`;
+      response = await fetch(searchUrl, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      data = await response.json();
+    }
+    dispatch(setUsers({ users: data }));
+  };
+
+  useEffect(() => {}, [])
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -55,30 +91,56 @@ const Navbar = () => {
           onClick={() => navigate("/home")}
           sx={{
             "&:hover": {
-              color: primaryLight,
+              color: dark,
               cursor: "pointer",
             },
           }}
         >
           Vets 4 Pets
         </Typography>
-        {isNonMobileScreens && (
           <FlexBetween
             backgroundColor={neutralLight}
-            borderRadius="50px"
-            gap="15rem"
-            padding="0.3rem 1.5rem"
+            borderRadius="9px"
+            gap="3rem"
+            padding="0.1rem 1.5rem"
           >
-            <InputBase
-              placeholder="Search..."
-              onChange={(e) => setQuery(e.target.value)}
-              value={query}
-            />
-            <IconButton>
-              <Search />
-            </IconButton>
+            <form onSubmit={handleSearch}>
+              <InputBase
+                placeholder="Find a user"
+                onChange={handleInputChange}
+                name="search"
+              />
+              <IconButton type="submit" onClick={handleSearch} disabled={isSearchDisabled}>
+                <Search placeholder="Search..."/>
+              </IconButton>
+            </form>
           </FlexBetween>
-        )}
+          {users.map((user) => (
+            <FlexBetween
+              backgroundColor={neutralLight}
+              borderRadius="9px"
+              width="250px"m
+              height="40px"
+              padding="0.1rem 1.5rem"
+              key={user.id}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <UserImage image={user.picturePath}/>
+                <Typography variant="h6">
+                  {user.firstName} {user.lastName}
+                </Typography>
+                <Typography color={dark}>
+                {user.location}
+              </Typography>
+              </Box>
+            </FlexBetween>
+          ))}
       </FlexBetween>
 
       {/* DESKTOP NAV */}
@@ -92,9 +154,8 @@ const Navbar = () => {
             )}
           </IconButton>
           <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
-          <FormControl variant="standard" value={fullName}>
+          <FormControl variant="standard" value={user}>
             <Select
               value={fullName}
               sx={{
@@ -113,6 +174,7 @@ const Navbar = () => {
               input={<InputBase />}
             >
               <MenuItem value={fullName}>
+                {/* <img src={user.picture}/> */}
                 <Typography>{fullName}</Typography>
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
@@ -167,7 +229,6 @@ const Navbar = () => {
               )}
             </IconButton>
             <Message sx={{ fontSize: "25px" }} />
-            <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />
             <FormControl variant="standard" value={fullName}>
               <Select
@@ -190,9 +251,7 @@ const Navbar = () => {
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
-                  Log Out
-                </MenuItem>
+                <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
               </Select>
             </FormControl>
           </FlexBetween>

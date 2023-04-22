@@ -15,8 +15,11 @@ const HomePage = () => {
       <Navbar />
       <Box
         width="100%"
+        margin="o auto"
         padding="2rem 6%"
         display={isNonMobileScreens ? "flex" : "block"}
+        flexDirection={isNonMobileScreens ? "row" : "column"}
+        alignItems={isNonMobileScreens ? "stretch" : "center"}
         gap="0.5rem"
         justifyContent="space-between"
       >
