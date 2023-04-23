@@ -25,10 +25,10 @@ import { setMode, setLogout } from "../../state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../../components/FlexBetween";
 import { setUsers } from "../../state";
-import UserImage from "../../components/UserImage";
+import UserImage from "components/UserImage";
 import { useEffect } from "react";
 
-const Navbar = ({ picturePath }) => {
+const Navbar = ({ picturePath, users }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,7 +44,8 @@ const Navbar = ({ picturePath }) => {
   const [isSearchDisabled, setIsSearchDisabled] = useState(true);
   const token = useSelector((state) => state.token);
   const URL = useSelector((state) => state.URL);
-  const users = useSelector((state) => state.users);
+  //const users = useSelector((state) => state.users);
+  const navigte = useNavigate();
 
   const fullName = `${user.firstName} ${user.lastName}`;
 
@@ -53,7 +54,7 @@ const Navbar = ({ picturePath }) => {
     const [newFirstName, newLastName] = value.split(" ");
     setFirstName(newFirstName);
     setLastName(newLastName);
-    setIsSearchDisabled(value.trim() === '');
+    setIsSearchDisabled(value.trim() === "");
     if (value === "") {
       dispatch(setUsers({ users: [] }));
     }
@@ -79,8 +80,6 @@ const Navbar = ({ picturePath }) => {
     dispatch(setUsers({ users: data }));
   };
 
-  useEffect(() => {}, [])
-
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
@@ -98,49 +97,59 @@ const Navbar = ({ picturePath }) => {
         >
           Vets 4 Pets
         </Typography>
+
+        <FlexBetween
+          backgroundColor={neutralLight}
+          borderRadius="9px"
+          gap="3rem"
+          padding="0.1rem 1.5rem"
+        >
+          <form onSubmit={handleSearch}>
+            <InputBase
+              placeholder="Search Users..."
+              onChange={handleInputChange}
+              name="search"
+            />
+            <IconButton
+              type="submit"
+              onClick={handleSearch}
+              disabled={isSearchDisabled}
+            >
+              <Search placeholder="Search Users..." />
+            </IconButton>
+          </form>
+        </FlexBetween>
+        {user.users?.map((user) => (
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-            gap="3rem"
+            width="250px"
+            height="40px"
             padding="0.1rem 1.5rem"
+            key={user.id}
+            sx={{
+              "&:hover": {
+                color: dark,
+                cursor: "pointer",
+              },
+            }}
           >
-            <form onSubmit={handleSearch}>
-              <InputBase
-                placeholder="Find a user"
-                onChange={handleInputChange}
-                name="search"
-              />
-              <IconButton type="submit" onClick={handleSearch} disabled={isSearchDisabled}>
-                <Search placeholder="Search..."/>
-              </IconButton>
-            </form>
-          </FlexBetween>
-          {users.map((user) => (
-            <FlexBetween
-              backgroundColor={neutralLight}
-              borderRadius="9px"
-              width="250px"m
-              height="40px"
-              padding="0.1rem 1.5rem"
-              key={user.id}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+              onClick={(e) => navigte(`/profile/${user._id}`)}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <UserImage image={user.picturePath}/>
-                <Typography variant="h6">
-                  {user.firstName} {user.lastName}
-                </Typography>
-                <Typography color={dark}>
-                {user.location}
+              <UserImage image={user.picturePath} />
+              <Typography variant="h6">
+                {user.firstName} {user.lastName}
               </Typography>
-              </Box>
-            </FlexBetween>
-          ))}
+              <Typography color={dark}>{user.location}</Typography>
+            </Box>
+          </FlexBetween>
+        ))}
       </FlexBetween>
 
       {/* DESKTOP NAV */}
@@ -251,7 +260,9 @@ const Navbar = ({ picturePath }) => {
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+                <MenuItem onClick={() => dispatch(setLogout())}>
+                  Log Out
+                </MenuItem>
               </Select>
             </FormControl>
           </FlexBetween>
