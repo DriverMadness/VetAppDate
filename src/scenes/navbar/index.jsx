@@ -119,7 +119,7 @@ const Navbar = ({ picturePath, users }) => {
             </IconButton>
           </form>
         </FlexBetween>
-        {user.users?.map((user) => (
+        {users?.map((user) => (
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
@@ -140,7 +140,7 @@ const Navbar = ({ picturePath, users }) => {
                 alignItems: "center",
                 gap: "1rem",
               }}
-              onClick={(e) => navigte(`/profile/${user._id}`)}
+              onClick={() => navigte(`/profile/${user._id}`)}
             >
               <UserImage image={user.picturePath} />
               <Typography variant="h6">
