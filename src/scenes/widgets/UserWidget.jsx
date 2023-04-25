@@ -1,5 +1,4 @@
 import {
-  ManageAccountsOutlined,
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
@@ -66,13 +65,20 @@ const UserWidget = ({ userId, picturePath }) => {
       <FlexBetween
         gap="0.5rem"
         pb="1.1rem"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          mt: "1rem",
+        }}
         onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexBetween gap="1rem">
-          <UserImage image={picturePath} />
+          <UserImage image={picturePath} size="100px" />
           <Box>
             <Typography
-              variant="h4"
+              variant="h3"
               color={dark}
               fontWeight="500"
               sx={{
@@ -87,34 +93,39 @@ const UserWidget = ({ userId, picturePath }) => {
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
       </FlexBetween>
 
-      <Divider />
+      <Divider sx={{ m: "1.5rem 0" }} />
 
       {/* SECOND ROW */}
-      <Box p="1rem 0">
-        <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
-          <LocationOnOutlined fontSize="large" sx={{ color: main }} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <Box gap="1rem" mb="0.5rem">
+          <LocationOnOutlined fontSize="large" sx={{ color: main, alignItems: "center" }} />
           <Typography color={medium}>{location}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
+        <Box alignItems="center" gap="1rem">
           <WorkOutlineOutlined fontSize="large" sx={{ color: main }} />
           <Typography color={medium}>{occupation}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
+        <Box alignItems="center" gap="1rem">
           <BadgeOutlined fontSize="large" sx={{ color: main }} />
           <Typography color={medium}>{animalName}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
+        <Box alignItems="center" gap="1rem">
           <PetsOutlined fontSize="large" sx={{ color: main }} />
           <Typography color={medium}>{animalBreed}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
+        <Box alignItems="center" gap="1rem">
           <WcOutlined fontSize="large" sx={{ color: main }} />
           <Typography color={medium}>{animalGender}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
+        <Box alignItems="center" gap="1rem">
           <NumbersOutlined fontSize="large" sx={{ color: main }} />
           <Typography color={medium}>{animalAge}</Typography>
         </Box>
@@ -173,7 +184,7 @@ const UserWidget = ({ userId, picturePath }) => {
         </FlexBetween>
       </Box>
     </WidgetWrapper>
-  )
+  );
 };
 
 export default UserWidget;

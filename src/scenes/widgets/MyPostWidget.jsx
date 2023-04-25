@@ -1,8 +1,6 @@
 import {
   EditOutlined,
   DeleteOutlined,
-  AttachFileOutlined,
-  GifBoxOutlined,
   ImageOutlined,
   MicOutlined,
   MoreHorizOutlined,
@@ -36,6 +34,7 @@ const MyPostWidget = ({ picturePath }) => {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
+  const user = useSelector((state) => state.user);
 
   const handlePost = async () => {
     const formData = new FormData();
@@ -57,16 +56,20 @@ const MyPostWidget = ({ picturePath }) => {
     setPost("");
   };
 
+  const name = `${user.firstName} what would you like to post?`;
+
   return (
     <WidgetWrapper>
       <FlexBetween gap="1.5rem">
         <UserImage image={picturePath} />
         <InputBase
-          placeholder="What's on your mind..."
+          placeholder={name}
           onChange={(e) => setPost(e.target.value)}
           value={post}
+          multiline
           sx={{
             width: "100%",
+            minHeight: "6rem",
             backgroundColor: palette.neutral.light,
             borderRadius: "2rem",
             padding: "1rem 2rem",

@@ -9,14 +9,11 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
-  Button,
 } from "@mui/material";
 import {
   Search,
-  Message,
   DarkMode,
   LightMode,
-  Help,
   Menu,
   Close,
 } from "@mui/icons-material";
@@ -26,7 +23,6 @@ import { useNavigate } from "react-router-dom";
 import FlexBetween from "../../components/FlexBetween";
 import { setUsers } from "../../state";
 import UserImage from "components/UserImage";
-import { useEffect } from "react";
 
 const Navbar = ({ picturePath, users }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -123,8 +119,8 @@ const Navbar = ({ picturePath, users }) => {
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-            width="250px"
-            height="40px"
+            width="300px"
+            height="50px"
             padding="0.1rem 1.5rem"
             key={user.id}
             sx={{
@@ -162,14 +158,12 @@ const Navbar = ({ picturePath, users }) => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard" value={user}>
             <Select
               value={fullName}
               sx={{
                 backgroundColor: neutralLight,
-                width: "150px",
+                width: "200px",
                 borderRadius: "0.25rem",
                 p: "0.25rem 1rem",
                 "& .MuiSvgIcon-root": {
@@ -237,8 +231,6 @@ const Navbar = ({ picturePath, users }) => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}

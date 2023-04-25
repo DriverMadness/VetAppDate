@@ -21,8 +21,26 @@ import { Autocomplete } from "@react-google-maps/api";
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("required")
+    .test("emailComplete", "Enter the complete email", (value) => {
+      if (value) {
+        const [username, domain] = value.split("@");
+        return !!username && !!domain && domain.includes(".");
+      } else {
+        return false;
+      }
+    }),
+    password: yup
+    .string()
+    .required("required")
+    .min(8, "Password must be at least 8 characters long")
+    .matches(
+      /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])/,
+      "Password must include at least one uppercase letter, one number, and one special character"
+    ),
   location: yup.string().required("required"),
   phoneNumber: yup.string().required("required"),
   occupation: yup.string().required("required"),
@@ -30,7 +48,13 @@ const registerSchema = yup.object().shape({
   animalBreed: yup.string().required("required"),
   animalGender: yup.string().required("required"),
   animalAge: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  picture: yup.mixed().test("fileSelected", "Picture is required", (value) => {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    } else {
+      return !!value;
+    }
+  }),
 });
 
 const loginSchema = yup.object().shape({
