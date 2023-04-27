@@ -5,7 +5,7 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
-  URL: "http://localhost:3001",
+  URL: "https://vets4petsapi.onrender.com",
 };
 
 export const authSlice = createSlice({
